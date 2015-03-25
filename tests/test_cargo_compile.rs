@@ -1687,3 +1687,24 @@ test!(dashes_in_crate_name_bad {
     assert_that(p.cargo_process("build").arg("-v"),
                 execs().with_status(101));
 });
+
+test!(dashes_in_crate_binary_name_ok {
+    let p = project("foo")
+        .file("Cargo.toml", r#"
+            [package]
+            name = "foo"
+            version = "0.0.1"
+            authors = []
+
+            [lib]
+            name = "foo_bar"
+
+            [[ bin ]]
+            name = "foo-bar"
+        "#)
+        .file("src/lib.rs", "")
+        .file("src/main.rs", "extern crate foo_bar; fn main() {}");
+
+    assert_that(p.cargo_process("build").arg("-v"),
+                execs().with_status(0));
+});

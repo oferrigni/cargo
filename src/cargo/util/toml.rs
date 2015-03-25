@@ -415,7 +415,6 @@ impl TomlManifest {
                 let bin = layout.main();
 
                 try!(bins.iter().map(|t| {
-                    try!(validate_target_name(t));
                     Ok(if bin.is_some() && t.path.is_none() {
                         TomlTarget {
                             path: bin.as_ref().map(|&p| PathValue::Path(p.clone())),
@@ -431,9 +430,6 @@ impl TomlManifest {
 
         let examples = match self.example {
             Some(ref examples) => {
-                for example in examples {
-                    try!(validate_target_name(example));
-                }
                 examples.clone()
             }
             None => inferred_example_targets(layout),
